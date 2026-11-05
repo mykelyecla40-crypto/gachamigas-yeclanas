@@ -3,291 +3,230 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f7f5ef">
-  <meta name="description" content="Calculadora de gachasmigas de Yecla: ajusta los ingredientes según los comensales y elige gramos, mililitros o una combinación de unidades.">
-  <title>Gachasmigas de Yecla · Calculadora</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23535b3c'/%3E%3Ctext x='32' y='43' font-size='32' text-anchor='middle' fill='%23fffaf0' font-family='Georgia'%3EG%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#f6f5ee">
+  <meta name="description" content="Calculadora de gachasmigas de Yecla para 4 a 30 personas, con medidas en peso, volumen o combinadas.">
+  <title>Gachasmigas de Yecla | Calculadora</title>
   <style>
-    :root { color-scheme: light; --bg:#f7f5ef; --paper:#fffefa; --ink:#292d25; --muted:#777b70; --olive:#545f40; --olive-dark:#414a33; --border:#e4e4db; --soft:#ecefe6; --terracotta:#c17856; --shadow:0 15px 55px rgba(44,51,32,.06); }
-    * { box-sizing: border-box; }
-    body { margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased; }
-    button, input, select { font:inherit; }
-    button, select { cursor:pointer; }
-    button:focus-visible, select:focus-visible, input:focus-visible { outline:3px solid #a8b591; outline-offset:3px; }
-    .page { width:min(100% - 40px, 990px); margin:0 auto; }
-    .top { display:flex; justify-content:space-between; align-items:center; padding:26px 0 19px; border-bottom:1px solid var(--border); gap:16px; }
-    .branding { display:flex; align-items:center; gap:11px; font-weight:750; letter-spacing:-.025em; font-size:15px; }
-    .mark { width:37px;height:37px; flex:0 0 auto; display:grid;place-items:center; background:var(--olive); color:#fffcf5; border-radius:12px; font:italic 25px Georgia,serif; }
-    .top-note { font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:750; color:var(--muted); }
-    .intro { padding:55px 0 32px; max-width:720px; }
-    .eyebrow { color:var(--terracotta); font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; margin:0 0 14px; }
-    h1 { font:normal clamp(43px,6.5vw,70px)/1.04 Georgia,"Times New Roman",serif; letter-spacing:-.055em; margin:0 0 17px; }
-    .lead { margin:0; color:var(--muted); font-size:16px; line-height:1.6; max-width:555px; }
-    .calculator { display:grid; grid-template-columns:minmax(260px,.87fr) minmax(350px,1.13fr); gap:18px; align-items:start; }
-    .panel { background:var(--paper); border:1px solid var(--border); border-radius:22px; box-shadow:var(--shadow); }
-    .setup { padding:30px; }
-    .section-kicker { font-size:11px; letter-spacing:.13em; font-weight:800; text-transform:uppercase; color:var(--muted); margin:0 0 14px; }
-    h2 { font:normal 31px/1.12 Georgia,"Times New Roman",serif; letter-spacing:-.035em; margin:0; }
-    .person-stepper { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:25px 0 12px; }
-    .step-button { background:#f2f3ec; color:var(--olive-dark); border:1px solid #e6e9df; width:58px; height:58px; border-radius:17px; display:grid; place-items:center; font-size:27px; font-weight:350; transition:background .15s; touch-action:manipulation; }
-    .step-button:hover { background:#e6ebde; }
-    .step-button:disabled { opacity:.35; cursor:not-allowed; }
-    .count-wrap { display:flex;flex-direction:column;align-items:center;flex:1; min-width:0; }
-    #people { border:0;outline:0; background:transparent; color:var(--ink); width:100%; text-align:center; font:normal 52px/1 Georgia,"Times New Roman",serif; letter-spacing:-.06em; -moz-appearance:textfield; padding:0; }
-    #people::-webkit-inner-spin-button, #people::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
-    .count-label { font-size:12px; font-weight:700; color:var(--muted); margin-top:5px; }
-    .rule { border:0; border-top:1px solid var(--border); margin:28px 0; }
-    .field-label { display:block; font-weight:700; margin:0 0 12px; font-size:14px; }
-    .select-wrap { position:relative; }
-    .select-wrap::after { content:""; position:absolute; pointer-events:none; right:17px; top:50%; width:8px;height:8px; border-right:2px solid var(--olive);border-bottom:2px solid var(--olive);transform:translateY(-70%) rotate(45deg); }
-    select { appearance:none; -webkit-appearance:none; background:#fafbf7; border:1px solid #dbdfd6; border-radius:12px; color:var(--ink); font-weight:700; padding:14px 37px 14px 14px; width:100%; min-height:48px; }
-    .hint { margin:12px 0 0; color:var(--muted); font-size:12px; line-height:1.55; }
-    .ingredients { padding:29px; }
-    .ingredients-top { display:flex;justify-content:space-between; align-items:flex-end; gap:12px; margin-bottom:20px; }
-    .for-people { white-space:nowrap; border-radius:99px; background:#e9eee2; color:var(--olive-dark); padding:7px 11px; font-size:12px; font-weight:750; }
-    .ingredient-list { display:grid; gap:10px; }
-    .ingredient { display:grid; grid-template-columns:44px minmax(0,1fr) auto; gap:14px; align-items:center; border:1px solid #ecece4; border-radius:17px; padding:17px 16px; background:#fff; }
-    .ingredient-icon { width:44px; height:44px; border-radius:13px; background:#eef0e8; color:var(--olive); display:grid;place-items:center; }
-    .ingredient:nth-child(2) .ingredient-icon { background:#f6eee4; color:#a97d4c; }
-    .ingredient:nth-child(3) .ingredient-icon { background:#eaf1f0; color:#517e86; }
-    .ingredient-icon svg { width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
-    .ingredient-name { font-size:15px; font-weight:750; margin-bottom:5px; }
-    .ingredient-sub { font-size:12px; color:var(--muted); }
-    .quantity-block { text-align:right; min-width:115px; }
-    .quantity { display:block; font-size:clamp(23px,3.1vw,33px);line-height:1.2;font-weight:750;letter-spacing:-.06em;font-variant-numeric:tabular-nums; white-space:nowrap; }
-    .unit-select { border:0; border-radius:0; border-bottom:1px dashed #c8cec0; background:transparent; min-height:30px; padding:3px 17px 2px 4px; color:var(--olive-dark); font-size:12px; font-weight:750; text-align:right; max-width:168px; }
-    .unit-select:focus { border-bottom-style:solid; }
-    .unit-wrap { display:inline-block; }
-    .unit-wrap::after { right:2px; width:6px;height:6px; border-width:1.5px; }
-    .extras { display:flex; align-items:center; gap:9px; padding:19px 3px 0; color:var(--muted); font-size:13px; }
-    .extras strong { color:var(--ink);font-weight:700; }
-    .extras-icon { font-size:18px; color:var(--terracotta); }
-    .actions { display:flex; gap:10px; margin-top:24px; }
-    .primary { display:flex;align-items:center;justify-content:center;gap:10px; width:100%;border:0; border-radius:14px; background:var(--olive);color:white;font-weight:750; padding:16px;min-height:51px; transition:background .15s,transform .15s; }
-    .primary:hover { background:var(--olive-dark); }
-    .primary:active { transform:scale(.99); }
-    .primary svg { width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
-    .share { width:52px; min-width:52px; border:1px solid var(--border); border-radius:14px;display:grid;place-items:center; background:#fff; color:var(--olive); }
-    .share svg { width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
-    .under { display:flex;justify-content:space-between;gap:24px;margin:27px 0 60px;align-items:start; }
-    .note { color:var(--muted);font-size:12px;line-height:1.65;margin:0;max-width:690px; }
-    details { margin-top:7px; }
-    summary { color:var(--olive);font-weight:700;cursor:pointer; }
-    details p {margin:9px 0 0;}
-    .footer {border-top:1px solid var(--border);font-size:12px;color:#8c9085; padding:20px 0 34px; display:flex; justify-content:space-between;gap:10px; }
-    .sr-only {position:absolute; width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
-    #toast { position:fixed;bottom:26px;left:50%;transform:translate(-50%,14px);background:#2f3628;color:white;padding:12px 20px;border-radius:12px;opacity:0;transition:.18s;pointer-events:none;font-weight:650;font-size:13px;box-shadow:0 7px 24px #0002;z-index:2; }
-    #toast.show { opacity:1;transform:translate(-50%,0); }
-    @media (max-width:760px) { .page {width:min(100% - 32px,560px);} .top {padding-top:18px;} .top-note{display:none;} .intro {padding:39px 0 27px;} .lead{font-size:14px;} .calculator{grid-template-columns:1fr;gap:13px;} .setup{padding:25px 24px;} .ingredients{padding:24px 20px;} .person-stepper{margin:15px 0 6px;} .step-button{height:55px;width:55px;} .rule{margin:20px 0;} .under{margin:22px 0 36px;} .footer{padding-bottom:25px;} }
-    @media (max-width:390px) { .page{width:calc(100% - 24px);} .ingredient{gap:8px;padding:12px 10px;grid-template-columns:37px minmax(0,1fr) auto;} .ingredient-icon{width:37px;height:37px;} .ingredient-name{font-size:13px;} .ingredient-sub{font-size:11px;} .quantity{font-size:25px;} .quantity-block{min-width:97px;} .setup{padding:22px;} .ingredients{padding:21px 14px;} .unit-select{max-width:142px;} }
-    @media (prefers-reduced-motion:reduce) { *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important;} }
+    :root { color-scheme:light; --bg:#f6f5ee; --card:#fffefa; --ink:#292f27; --muted:#70786a; --green:#51613f; --edge:#e3e6db; --wash:#eef1e9; --accent:#b8754d; }
+    * { box-sizing:border-box; }
+    html { -webkit-text-size-adjust:100%; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; }
+    button,select,input { font:inherit; }
+    button { cursor:pointer; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+    button:focus-visible,select:focus-visible,input:focus-visible { outline:3px solid #9cac8e; outline-offset:3px; }
+    .container { width:min(calc(100% - 32px),840px); margin:0 auto; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:20px 0; border-bottom:1px solid var(--edge); }
+    .brand { display:flex;align-items:center;gap:10px;font-weight:750;font-size:15px;letter-spacing:-.025em; }
+    .logo { width:36px;height:36px;display:grid;place-items:center;background:var(--green);color:#fff;border-radius:11px;font:italic 25px Georgia,serif; }
+    .version { color:var(--muted);font-size:12px;white-space:nowrap; }
+    .intro { padding:35px 0 26px; }
+    .eyebrow { font-size:11px;font-weight:800;letter-spacing:.15em;color:var(--accent);text-transform:uppercase; }
+    h1 { margin:12px 0 10px;font:normal clamp(37px,7vw,60px)/1.08 Georgia,serif;letter-spacing:-.047em; }
+    .intro p { margin:0;color:var(--muted);font-size:15px;line-height:1.55;max-width:570px; }
+    .layout { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.13fr);gap:14px;align-items:start; }
+    .card { border:1px solid var(--edge);border-radius:21px;background:var(--card);padding:25px;box-shadow:0 12px 35px rgba(45,51,30,.045);min-width:0; }
+    h2 { font:normal 29px/1.14 Georgia,serif;letter-spacing:-.025em;margin:0 0 16px; }
+    .minor { display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;margin:0 0 12px; }
+    .counter { display:flex;justify-content:space-between;align-items:center;gap:8px;margin:14px 0 14px; }
+    .round { width:58px;height:58px;flex:0 0 58px;display:grid;place-items:center;background:var(--wash);border:1px solid var(--edge);border-radius:16px;font-size:30px;color:var(--green); }
+    .round:disabled { opacity:.34;cursor:default; }
+    .number-box { display:flex;flex-direction:column;align-items:center;min-width:0; }
+    #people { width:98px;text-align:center;background:transparent;border:0;border-radius:4px;font:normal 51px/1 Georgia,serif;color:var(--ink);padding:0;-moz-appearance:textfield; }
+    #people::-webkit-inner-spin-button,#people::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+    .number-box label { font-size:12px;color:var(--muted);font-weight:700;margin-top:4px; }
+    #range { appearance:none;-webkit-appearance:none;display:block;width:100%;height:7px;margin:14px 0 7px;background:#e3e8dc;border-radius:9px;accent-color:var(--green); }
+    #range::-webkit-slider-thumb { -webkit-appearance:none;width:25px;height:25px;border:3px solid var(--card);border-radius:50%;background:var(--green);box-shadow:0 0 0 1px #b4c0aa; }
+    #range::-moz-range-thumb { width:21px;height:21px;border:3px solid var(--card);border-radius:50%;background:var(--green); }
+    .scale { display:flex;justify-content:space-between;color:var(--muted);font-size:12px; }
+    .separator { border:0;border-top:1px solid var(--edge);margin:24px 0; }
+    label.block { font-size:13px;font-weight:750;display:block;margin-bottom:10px; }
+    select { display:block;width:100%;min-width:0;border-radius:11px;border:1px solid #d6dece;color:var(--ink);background:#fafbf7;padding:12px 31px 12px 12px;min-height:47px;font-weight:700;font-size:13px; }
+    select.unit { min-height:38px;font-size:12px;padding:8px 8px; }
+    .help { font-size:12px;line-height:1.5;color:var(--muted);margin:11px 0 0; }
+    .headrow { display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:18px; }
+    .headrow h2 { margin:0; }
+    .pill { padding:8px 10px;border-radius:50px;white-space:nowrap;background:var(--wash);color:var(--green);font-size:12px;font-weight:800; }
+    .ingredients { display:grid;gap:10px; }
+    .ingredient { display:grid;grid-template-columns:minmax(0,1fr) minmax(114px,144px);gap:12px;align-items:center;background:#fff;border:1px solid #e8ebe3;border-radius:15px;padding:16px 13px; }
+    .ingredient strong { display:block;font-size:14px;line-height:1.3; }
+    .ingredient small { display:block;color:var(--muted);margin-top:3px;font-size:11px; }
+    .result { min-width:0;text-align:right; }
+    .amount { display:block;font-size:29px;line-height:1.15;font-weight:780;letter-spacing:-.045em;font-variant-numeric:tabular-nums; }
+    .result select { margin-top:7px; }
+    .extra { color:var(--muted);font-size:13px;line-height:1.5;margin:19px 0 0; }
+    .extra strong { color:var(--ink); }
+    .buttons { display:flex;gap:9px;margin-top:22px; }
+    .btn-primary { flex:1;min-height:49px;border:0;border-radius:12px;background:var(--green);color:#fff;font-weight:750; }
+    .btn-secondary { min-height:49px;border:1px solid var(--edge);border-radius:12px;background:#fff;padding:0 16px;color:var(--green);font-weight:750; }
+    .footnote { font-size:12px;color:var(--muted);line-height:1.55;margin:20px 0 40px; }
+    details { margin-top:9px; } summary { cursor:pointer;color:var(--green);font-weight:750; } details p { margin:7px 0 0; }
+    footer { border-top:1px solid var(--edge);padding:20px 0 30px;font-size:12px;color:var(--muted); }
+    .status { position:fixed;bottom:28px;left:50%;transform:translateX(-50%);padding:12px 16px;border-radius:12px;background:var(--ink);color:#fff;box-shadow:0 8px 24px #0002;font-size:13px;z-index:9; }
+    .status[hidden] { display:none; }
+    @media (max-width:700px) { .layout { grid-template-columns:1fr; } .container { width:min(calc(100% - 26px),520px); } .intro { padding:29px 0 22px; } .card { padding:22px; } .ingredient { padding:13px 12px; } }
+    @media (max-width:350px) { .card {padding:17px;} .ingredient {grid-template-columns:minmax(0,1fr) minmax(105px,125px);gap:5px;padding:12px 9px;} .amount {font-size:26px;} .intro p {font-size:14px;} }
   </style>
 </head>
 <body>
-  <div class="page">
-    <header class="top">
-      <div class="branding"><span class="mark" aria-hidden="true">G</span><span>Gachasmigas <span style="color:#899080;font-weight:450">/ Yecla</span></span></div>
-      <div class="top-note">Recetario de nuestra tierra</div>
-    </header>
-
+  <div class="container">
+    <header><div class="brand"><span class="logo">G</span>Gachasmigas · Yecla</div><span class="version">v2 · 4–30 personas</span></header>
     <main>
-      <section class="intro" aria-labelledby="title">
-        <p class="eyebrow">Calculadora de ingredientes</p>
-        <h1 id="title">Las gachasmigas,<br>a tu medida.</h1>
-        <p class="lead">Elige para cuántas personas vas a cocinar. Mide cada ingrediente en gramos, mililitros o como te resulte más cómodo.</p>
+      <section class="intro">
+        <span class="eyebrow">Calculadora de ingredientes</span>
+        <h1>Las gachasmigas,<br>a tu medida.</h1>
+        <p>Elige las personas y mide cada ingrediente en gramos, mililitros o con las unidades que prefieras.</p>
       </section>
-
-      <div class="calculator">
-        <section class="panel setup" aria-labelledby="people-heading">
-          <p class="section-kicker">01 / Comensales</p>
-          <h2 id="people-heading">¿Cuántos sois?</h2>
-          <div class="person-stepper">
-            <button class="step-button" id="decrease" type="button" aria-label="Una persona menos">−</button>
-            <div class="count-wrap">
-              <label for="people" class="sr-only">Número de personas</label>
-              <input id="people" type="number" inputmode="numeric" min="1" max="100" step="1" value="4" aria-describedby="people-help">
-              <span class="count-label" id="people-help">personas</span>
-            </div>
-            <button class="step-button" id="increase" type="button" aria-label="Una persona más">+</button>
+      <div class="layout">
+        <section class="card" aria-label="Configurar receta">
+          <span class="minor">01 / Comensales</span>
+          <h2>¿Cuántos sois?</h2>
+          <div class="counter">
+            <button type="button" id="minus" class="round" aria-label="Una persona menos" disabled>−</button>
+            <div class="number-box"><input type="number" id="people" min="4" max="30" step="1" value="4" inputmode="numeric" aria-label="Número de personas"><label for="people">personas</label></div>
+            <button type="button" id="plus" class="round" aria-label="Una persona más">+</button>
           </div>
-          <hr class="rule">
-          <p class="section-kicker">02 / Medidas</p>
-          <label for="mode" class="field-label">¿Cómo quieres medir?</label>
-          <div class="select-wrap">
-            <select id="mode">
-              <option value="mixed">Mixto · aceite y agua en ml, harina en g</option>
-              <option value="volume">Todo en volumen · ml</option>
-              <option value="weight">Todo en peso · g</option>
-              <option value="custom">A mi manera · combinar unidades</option>
-            </select>
-          </div>
-          <p class="hint">Puedes cambiar también la unidad de cada ingrediente, de forma independiente.</p>
+          <input type="range" id="range" min="4" max="30" step="1" value="4" aria-label="Elegir número de personas">
+          <div class="scale"><span>4 personas</span><span>30 personas</span></div>
+          <hr class="separator">
+          <span class="minor">02 / Unidades</span>
+          <label class="block" for="mode">¿Cómo quieres medir?</label>
+          <select id="mode">
+            <option value="mixed">Mixto (aceite ml · harina g · agua ml)</option>
+            <option value="volume">Todo en volumen (ml)</option>
+            <option value="weight">Todo en peso (g)</option>
+            <option value="custom">Personalizado (cada ingrediente)</option>
+          </select>
+          <p class="help">También puedes cambiar la unidad de cada ingrediente por separado.</p>
         </section>
-
-        <section class="panel ingredients" aria-labelledby="ingredients-heading">
-          <div class="ingredients-top">
-            <div><p class="section-kicker">03 / Tu receta</p><h2 id="ingredients-heading">Ingredientes</h2></div>
-            <span class="for-people" id="people-badge">4 personas</span>
+        <section class="card" aria-label="Ingredientes calculados">
+          <span class="minor">03 / Tu receta</span>
+          <div class="headrow"><h2>Ingredientes</h2><span class="pill" id="badge">4 personas</span></div>
+          <div class="ingredients">
+            <div class="ingredient"><div><strong>Aceite de oliva</strong><small>Virgen extra</small></div><div class="result"><output class="amount" id="oil-value">150</output><select class="unit" id="oil-unit" aria-label="Unidad del aceite"></select></div></div>
+            <div class="ingredient"><div><strong>Harina de trigo</strong><small>De uso común</small></div><div class="result"><output class="amount" id="flour-value">316</output><select class="unit" id="flour-unit" aria-label="Unidad de la harina"></select></div></div>
+            <div class="ingredient"><div><strong>Agua</strong><small>Para la masa</small></div><div class="result"><output class="amount" id="water-value">1.105</output><select class="unit" id="water-unit" aria-label="Unidad del agua"></select></div></div>
           </div>
-
-          <div class="ingredient-list">
-            <div class="ingredient">
-              <div class="ingredient-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3c-3.5 4.2-7 8-7 12a7 7 0 0 0 14 0c0-4-3.5-7.8-7-12Z"/><path d="M9 17c.4 1 1.1 1.6 2 1.8"/></svg></div>
-              <div><div class="ingredient-name">Aceite de oliva</div><div class="ingredient-sub">Virgen extra</div></div>
-              <div class="quantity-block"><output class="quantity" id="oil-value">150</output><div class="select-wrap unit-wrap"><label class="sr-only" for="oil-unit">Unidad del aceite</label><select class="unit-select" id="oil-unit" data-ingredient="oil"></select></div></div>
-            </div>
-            <div class="ingredient">
-              <div class="ingredient-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21V3m0 3c-3-3-5-3-7-3 0 4 2 6 7 7m0 2c-3-3-5-3-7-3 0 4 2 6 7 7m0-10c3-3 5-3 7-3 0 4-2 6-7 7m0 2c3-3 5-3 7-3 0 4-2 6-7 7"/></svg></div>
-              <div><div class="ingredient-name">Harina de trigo</div><div class="ingredient-sub">De uso común</div></div>
-              <div class="quantity-block"><output class="quantity" id="flour-value">316</output><div class="select-wrap unit-wrap"><label class="sr-only" for="flour-unit">Unidad de la harina</label><select class="unit-select" id="flour-unit" data-ingredient="flour"></select></div></div>
-            </div>
-            <div class="ingredient">
-              <div class="ingredient-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 8c2-2 4-2 6 0s4 2 6 0 4-2 8 0M2 14c2-2 4-2 6 0s4 2 6 0 4-2 8 0M2 20c2-2 4-2 6 0s4 2 6 0 4-2 8 0"/></svg></div>
-              <div><div class="ingredient-name">Agua</div><div class="ingredient-sub">Para la masa</div></div>
-              <div class="quantity-block"><output class="quantity" id="water-value">1.105</output><div class="select-wrap unit-wrap"><label class="sr-only" for="water-unit">Unidad del agua</label><select class="unit-select" id="water-unit" data-ingredient="water"></select></div></div>
-            </div>
-          </div>
-
-          <div class="extras"><span class="extras-icon" aria-hidden="true">✳</span><span><strong>Y además:</strong> ajos y sal al gusto.</span></div>
-          <div class="actions">
-            <button type="button" class="primary" id="copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Copiar cantidades</button>
-            <button type="button" class="share" id="share" aria-label="Compartir receta" title="Compartir receta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m0 0L7 8m5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button>
-          </div>
+          <p class="extra"><strong>Y además:</strong> ajos y sal al gusto.</p>
+          <div class="buttons"><button type="button" id="copy" class="btn-primary">Copiar receta</button><button type="button" id="share" class="btn-secondary">Compartir</button></div>
         </section>
       </div>
-
-      <div class="under">
-        <div class="note">
-          <strong style="color:#4e5447">La proporción de siempre.</strong> Partimos de 95 ml de aceite, 200 g de harina y 700 ml de agua, ajustados para 4 personas con 150 ml de aceite.
-          <details><summary>Ver equivalencias utilizadas</summary><p>Para convertir entre peso y volumen: harina de trigo 0,5 g/ml; aceite de oliva 0,91 g/ml; agua 1 g/ml. Una cucharada son 15 ml, una taza 250 ml y un vaso 200 ml.</p></details>
-        </div>
+      <div class="footnote">
+        Base de cálculo: por cada 95 ml de aceite, 200 g de harina y 700 ml de agua; 150 ml de aceite para 4 personas.
+        <details><summary>Equivalencias para convertir peso y volumen</summary><p>Harina: 0,5 g/ml. Aceite: 0,91 g/ml. Agua: 1 g/ml. Cucharada: 15 ml. Vaso: 200 ml. Taza: 250 ml.</p></details>
       </div>
     </main>
-
-    <footer class="footer"><span>Gachasmigas de Yecla</span><span>Hecha para compartir la tradición</span></footer>
+    <footer>Gachasmigas de Yecla · Calculadora gratuita</footer>
   </div>
-  <div id="toast" role="status" aria-live="polite"></div>
-
+  <div class="status" id="status" hidden role="status" aria-live="polite"></div>
   <script>
-    (() => {
+    (function () {
       'use strict';
-      const BASE = Object.freeze({ oilMl: 150, flourG: 200 * 150 / 95, waterMl: 700 * 150 / 95, servings: 4 });
-      const density = Object.freeze({ oil: 0.91, flour: 0.5, water: 1 }); // g / ml
-      const units = Object.freeze({
-        ml: { label: 'ml · mililitros', kind:'volume', ratio:1 },
-        cl: { label: 'cl · centilitros', kind:'volume', ratio:10 },
-        l: { label: 'L · litros', kind:'volume', ratio:1000 },
-        tbsp: { label: 'cucharadas · 15 ml', kind:'volume', ratio:15 },
-        glass: { label: 'vasos · 200 ml', kind:'volume', ratio:200 },
-        cup: { label: 'tazas · 250 ml', kind:'volume', ratio:250 },
-        g: { label: 'g · gramos', kind:'weight', ratio:1 },
-        kg: { label: 'kg · kilogramos', kind:'weight', ratio:1000 },
-        oz: { label: 'oz · onzas', kind:'weight', ratio:28.349523125 }
-      });
-      const presets = Object.freeze({
-        mixed: {oil:'ml',flour:'g',water:'ml'},
-        volume: {oil:'ml',flour:'ml',water:'ml'},
-        weight: {oil:'g',flour:'g',water:'g'}
-      });
-      let servings = 4;
-      let selected = {...presets.mixed};
-      const el = id => document.getElementById(id);
-      const people = el('people');
-      const mode = el('mode');
-      const es = new Intl.NumberFormat('es-ES', {maximumFractionDigits: 3});
-      let toastTimeout;
-
-      for (const key of ['oil','flour','water']) {
-        const select = el(`${key}-unit`);
-        Object.entries(units).forEach(([value, config]) => {
-          const option = document.createElement('option');
-          option.value = value;
-          option.textContent = config.label;
-          select.appendChild(option);
+      // Original recipe: 95 ml oil + 200 g flour + 700 g water.
+      // Four servings use 150 ml oil; preserve recipe ratios exactly.
+      const FACTOR = 150 / 95;
+      const FOUR = {oil:150, flour:200*FACTOR, water:700*FACTOR};
+      const DENSITY = {oil:0.91, flour:0.5, water:1}; // grams per milliliter
+      const UNIT_OPTIONS = [
+        ['ml','ml · mililitros','volume',1],
+        ['cl','cl · centilitros','volume',10],
+        ['l','L · litros','volume',1000],
+        ['g','g · gramos','weight',1],
+        ['kg','kg · kilogramos','weight',1000],
+        ['tbsp','cucharadas (15 ml)','volume',15],
+        ['glass','vasos (200 ml)','volume',200],
+        ['cup','tazas (250 ml)','volume',250]
+      ];
+      const UNITS = Object.fromEntries(UNIT_OPTIONS.map(u => [u[0], {type:u[2],size:u[3]}]));
+      const PRESET = {
+        mixed:{oil:'ml',flour:'g',water:'ml'},
+        volume:{oil:'ml',flour:'ml',water:'ml'},
+        weight:{oil:'g',flour:'g',water:'g'}
+      };
+      const names = {oil:'Aceite de oliva',flour:'Harina de trigo',water:'Agua'};
+      const id = name => document.getElementById(name);
+      let people = 4;
+      let selection = {...PRESET.mixed};
+      const format = (num, unit) => {
+        const decimals = ['kg','l'].includes(unit) ? 3 : ['cl','tbsp','glass','cup'].includes(unit) ? 1 : 0;
+        return new Intl.NumberFormat('de-DE',{maximumFractionDigits:decimals}).format(num);
+      };
+      function measure(key,unit) {
+        const factor = people / 4;
+        const weightG = FOUR[key] * factor; // oil/water base values are ml
+        const volumeMl = key === 'flour' ? weightG / DENSITY.flour : weightG;
+        const u = UNITS[unit];
+        return u.type === 'volume' ? volumeMl / u.size : (volumeMl * DENSITY[key]) / u.size;
+      }
+      function update() {
+        id('people').value = people;
+        id('range').value = people;
+        id('minus').disabled = people === 4;
+        id('plus').disabled = people === 30;
+        id('badge').textContent = people + ' personas';
+        ['oil','flour','water'].forEach(key => {
+          id(key+'-unit').value = selection[key];
+          id(key+'-value').textContent = format(measure(key,selection[key]),selection[key]);
         });
-        select.addEventListener('change', () => {
-          selected[key] = select.value;
-          const matched = Object.keys(presets).find(name =>
-            ['oil','flour','water'].every(item => presets[name][item] === selected[item]));
-          mode.value = matched || 'custom';
-          render();
+      }
+      function setPeople(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return;
+        people = Math.min(30,Math.max(4,Math.round(n)));
+        update();
+      }
+      ['oil','flour','water'].forEach(key => {
+        const select = id(key+'-unit');
+        UNIT_OPTIONS.forEach(unit => select.add(new Option(unit[1],unit[0])));
+        select.addEventListener('change',() => {
+          selection[key] = select.value;
+          const preset = Object.keys(PRESET).find(p => ['oil','flour','water'].every(k => PRESET[p][k] === selection[k]));
+          id('mode').value = preset || 'custom';
+          update();
         });
-      }
-
-      function quantityMl(ingredient) {
-        const factor = servings / BASE.servings;
-        if (ingredient === 'oil') return BASE.oilMl * factor;
-        if (ingredient === 'water') return BASE.waterMl * factor;
-        return BASE.flourG * factor / density.flour;
-      }
-      function convert(ingredient, unit) {
-        const conf = units[unit];
-        const ml = quantityMl(ingredient);
-        return conf.kind === 'volume' ? ml / conf.ratio : ml * density[ingredient] / conf.ratio;
-      }
-      function formatted(value, unit) {
-        let decimalPlaces;
-        if (unit === 'kg' || unit === 'l' || unit === 'cup') decimalPlaces = value < 0.1 ? 3 : 2;
-        else if (unit === 'cl' || unit === 'tbsp' || unit === 'glass' || unit === 'oz') decimalPlaces = 1;
-        else decimalPlaces = value >= 100 ? 0 : (value >= 10 ? 1 : 2);
-        return new Intl.NumberFormat('es-ES', {maximumFractionDigits:decimalPlaces}).format(value);
-      }
-      function render() {
-        people.value = servings;
-        el('people-badge').textContent = `${servings} ${servings === 1 ? 'persona' : 'personas'}`;
-        for (const key of ['oil','flour','water']) {
-          el(`${key}-unit`).value = selected[key];
-          const val = convert(key, selected[key]);
-          el(`${key}-value`).textContent = formatted(val, selected[key]);
-        }
-        el('decrease').disabled = servings <= 1;
-        el('increase').disabled = servings >= 100;
-      }
-      function setServings(number) {
-        if (!Number.isFinite(number)) return;
-        servings = Math.max(1,Math.min(100,Math.round(number)));
-        render();
-      }
-      el('decrease').addEventListener('click', () => setServings(servings-1));
-      el('increase').addEventListener('click', () => setServings(servings+1));
-      people.addEventListener('change', () => setServings(Number(people.value) || 1));
-      people.addEventListener('blur', () => setServings(Number(people.value) || servings));
-      mode.addEventListener('change', () => {
-        if (mode.value !== 'custom') selected = {...presets[mode.value]};
-        render();
       });
-      function recipeText() {
-        const line = (key, label) => `${label}: ${formatted(convert(key, selected[key]),selected[key])} ${selected[key] === 'tbsp' ? 'cucharadas' : selected[key] === 'glass' ? 'vasos (200 ml)' : selected[key] === 'cup' ? 'tazas (250 ml)' : selected[key]}`;
-        return `GACHASMIGAS DE YECLA — ${servings} ${servings === 1 ? 'PERSONA' : 'PERSONAS'}\n\n${line('oil','Aceite de oliva')}\n${line('flour','Harina de trigo')}\n${line('water','Agua')}\nAjos y sal: al gusto\n\nCalculadora de gachasmigas`;
+      id('minus').addEventListener('click',() => setPeople(people-1));
+      id('plus').addEventListener('click',() => setPeople(people+1));
+      id('people').addEventListener('change',() => setPeople(id('people').value));
+      id('people').addEventListener('blur',() => setPeople(id('people').value || people));
+      id('range').addEventListener('input',() => setPeople(id('range').value));
+      id('mode').addEventListener('change',() => {
+        if (PRESET[id('mode').value]) selection = {...PRESET[id('mode').value]};
+        update();
+      });
+      function recipe() {
+        const lines = ['GACHASMIGAS DE YECLA · '+people+' personas',''];
+        ['oil','flour','water'].forEach(key => {
+          const unit = selection[key];
+          const label = UNIT_OPTIONS.find(u=>u[0]===unit)[1].split(' · ')[0];
+          lines.push(names[key]+': '+format(measure(key,unit),unit)+' '+label);
+        });
+        lines.push('Ajos y sal: al gusto');
+        return lines.join('\n');
       }
-      function toast(message) {
-        const toastEl = el('toast');
-        toastEl.textContent = message;
-        toastEl.classList.add('show');
-        clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => toastEl.classList.remove('show'),2200);
+      let timeout;
+      function notice(message) {
+        const el = id('status'); el.textContent = message; el.hidden = false;
+        clearTimeout(timeout); timeout = setTimeout(()=>{el.hidden=true;},2500);
       }
-      async function copyRecipe() {
-        const text = recipeText();
+      async function copy() {
+        const value = recipe();
         try {
-          if (!navigator.clipboard?.writeText) throw new Error('Clipboard API no disponible');
-          await navigator.clipboard.writeText(text);
-          toast('Cantidades copiadas');
-        } catch(e) {
-          const box = document.createElement('textarea');
-          box.value = text;box.setAttribute('readonly','');box.style.position='fixed';box.style.opacity='0';document.body.appendChild(box);
-          box.select();box.setSelectionRange(0,text.length);
+          if (!navigator.clipboard || !navigator.clipboard.writeText) throw new Error('Sin Clipboard API');
+          await navigator.clipboard.writeText(value);
+          notice('Receta copiada');
+        } catch (e) {
+          const box = document.createElement('textarea'); box.value = value; box.style.position='fixed'; box.style.opacity='0';document.body.appendChild(box);box.select();
           const ok = document.execCommand('copy');box.remove();
-          toast(ok ? 'Cantidades copiadas' : 'No se pudo copiar');
+          notice(ok ? 'Receta copiada' : 'Mantén pulsado para copiar las cantidades');
         }
       }
-      el('copy').addEventListener('click',copyRecipe);
-      el('share').addEventListener('click', async () => {
-        if (!navigator.share) { await copyRecipe(); return; }
-        try { await navigator.share({title:`Gachasmigas para ${servings}`,text:recipeText(),...(location.protocol.startsWith('http') ? {url:location.href} : {})}); }
-        catch (e) { if (e.name !== 'AbortError') await copyRecipe(); }
+      id('copy').addEventListener('click',copy);
+      id('share').addEventListener('click',async () => {
+        if (!navigator.share) {await copy();return;}
+        try {await navigator.share({title:'Gachasmigas de Yecla',text:recipe(),url:location.href});}
+        catch(e) {if (e.name !== 'AbortError') await copy();}
       });
-      render();
+      update();
     })();
   </script>
 </body>
